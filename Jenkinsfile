@@ -12,7 +12,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running application tests...'
-                sh  sh '''
+                sh '''
             python3 -m venv .ci-venv
             .ci-venv/bin/pip install --upgrade pip
             .ci-venv/bin/pip install -r requirements.txt
