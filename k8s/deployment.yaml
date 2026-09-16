@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: habitpulse
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: habitpulse
+  template:
+    metadata:
+      labels:
+        app: habitpulse
+    spec:
+      containers:
+        - name: habitpulse
+          image: sureshkrishnasp/habitpulse:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000

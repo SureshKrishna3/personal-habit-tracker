@@ -1,0 +1,62 @@
+---
+- name: Bootstrap local DevOps environment
+  hosts: local
+  become: true
+  become_method: sudo
+  become_flags: "-n"
+
+  tasks:
+
+    - name: Update apt cache
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install required packages
+      apt:
+        name:
+          - docker.io
+          - curl
+          - wget
+          - conntrack
+          - socat
+        state: present
+
+    - name: Enable Docker service
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Add current user to Docker group
+      user:
+        name: "{{ ansible_user_id }}"
+        groups: docker
+        append: true
+
+    - name: Check Docker installation
+      command: docker --version
+      register: docker_version
+      changed_when: false
+
+    - name: Display Docker version
+      debug:
+        msg: "{{ docker_version.stdout }}"
+
+    - name: Check Minikube installation
+      command: minikube version
+      register: minikube_version
+      changed_when: false
+
+    - name: Display Minikube version
+      debug:
+        msg: "{{ minikube_version.stdout }}"
+
+    - name: Check kubectl installation
+      command: kubectl version --client
+      register: kubectl_version
+      changed_when: false
+
+    - name: Display kubectl version
+      debug:
+        msg: "{{ kubectl_version.stdout }}"
